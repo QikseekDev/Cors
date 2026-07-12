@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
   res.json({ status: 'InfiniBrowser CORS Proxy' });
 });
 
-// InfiniBrowser API proxy
+// InfiniBrowser API proxy with spoofing
 app.get('/api/recipe', async (req, res) => {
   try {
     const id = req.query.id;
@@ -30,14 +30,33 @@ app.get('/api/recipe', async (req, res) => {
     // Construct infinibrowser URL
     const targetUrl = `https://infinibrowser.wiki/api/Recipe?id=${encodeURIComponent(id)}`;
 
-    // Fetch with User-Agent header
+    // Spoof headers to look like real browser request
+    const headers = {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      'Accept': 'application/json, text/plain, */*',
+      'Accept-Language': 'en-US,en;q=0.9',
+      'Accept-Encoding': 'gzip, deflate, br',
+      'DNT': '1',
+      'Connection': 'keep-alive',
+      'Upgrade-Insecure-Requests': '1',
+      'Sec-Fetch-Dest': 'empty',
+      'Sec-Fetch-Mode': 'cors',
+      'Sec-Fetch-Site': 'same-site',
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache',
+      'Referer': 'https://infinibrowser.wiki/',
+      'Origin': 'https://infinibrowser.wiki',
+      'X-Requested-With': 'XMLHttpRequest'
+    };
+
+    // Fetch from infinibrowser with spoofed headers
     const response = await fetch(targetUrl, {
       method: 'GET',
       redirect: 'follow',
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-      }
+      headers: headers
     });
+
+    console.log(`Fetch status: ${response.status} for id: ${id}`);
 
     if (!response.ok) {
       return res.status(response.status).json({ error: `infinibrowser returned ${response.status}`, status: response.status });
