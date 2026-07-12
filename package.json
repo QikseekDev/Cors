@@ -1,0 +1,9 @@
+{
+  "name": "cors-proxy-vercel",
+  "version": "1.0.0",
+  "description": "CORS Proxy on Vercel",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel"
+  }
+}
