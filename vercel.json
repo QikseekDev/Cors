@@ -2,14 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/cors.js",
+      "src": "server.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
-      "src": "/api/cors",
-      "dest": "api/cors.js"
+      "src": "/(.*)",
+      "dest": "server.js"
     }
   ]
 }
