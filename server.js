@@ -30,14 +30,17 @@ app.get('/api/recipe', async (req, res) => {
     // Construct infinibrowser URL
     const targetUrl = `https://infinibrowser.wiki/api/Recipe?id=${encodeURIComponent(id)}`;
 
-    // Fetch from infinibrowser
+    // Fetch with User-Agent header
     const response = await fetch(targetUrl, {
       method: 'GET',
-      redirect: 'follow'
+      redirect: 'follow',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+      }
     });
 
     if (!response.ok) {
-      return res.status(response.status).json({ error: `infinibrowser returned ${response.status}` });
+      return res.status(response.status).json({ error: `infinibrowser returned ${response.status}`, status: response.status });
     }
 
     const data = await response.json();
